@@ -28,7 +28,6 @@ class MovieObject():
             word = struct.unpack("i",f.read(4))[0]
             self.offset += 1
             if word == magic:
-                print ("found word")
                 self.offset = self.offset - 1 
                 f.seek(self.offset,0) #i.e. from beginning 
                 break
