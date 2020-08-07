@@ -17,6 +17,8 @@ class Movie():
         
         self.m = m
         self.N_frames = N_frames
+               
+        self.framerate = self.m.framerate
 
         self.tmp = m.load_frames(N_frames)
 
@@ -70,30 +72,17 @@ class Movie():
             if tau % 10 == 0:
                 print ("We are %.2f done" %(tau / self.max_tau*100,) )
                 
-    def get_image(self,q_quantization_levels):
-        self.q_quantization_levels = q_quantization_levels
-        #subsample... ARGH.
-        self.q_tau_structure = np.zeros((self.max_tau,
-                                         q_quantization_levels)) #hmm
-        #need to bin appropriately.
-        increment = max(self.freq_array) / q_quantization_levels
-    
-        self.mid_bin_vals = np.array([increment*i for i in range(q_quantization_levels)]) + increment/2
-        #we should really also get the uncertainty
-        #this will help plotting
-        #we'll also want to get the standard deviation?
-        #how to do error propagation properly?
-        
-        self.bin_destimations = []
-        for i in self.freq_array:
-            #oh no, this isn't right..
-            goto_bin = int (i/increment)
-            if goto_bin == q_quantization_levels:
-                goto_bin -= 1
-            self.bin_destimations.append(goto_bin)
-        
-        for tau in self.iqtau:
-            self.q_tau_structure[tau,:] = npg.aggregate(self.bin_destimations,
-                                                        self.iqtau[tau],
-                                                        func="mean")
-        self.tau_vals = np.arange(self.max_tau) #issue with off by 1...
+
+    def save_raw(self,fname): 
+        import pickle as pkl
+        #need to somehow also save the scale, and frame rate
+
+        data_file = {"iqtau" : self.iqtau, 
+                     "freqs" : self.freq_array,
+                     "framerate" : self.framerate,
+        	     "max_tau" : self.max_tau,}
+        pkl.dump(data_file, open(fname,'wb+'))
+
+
+
+

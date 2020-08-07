@@ -49,7 +49,7 @@ class MovieObject():
         self.data_shape.append(struct.unpack("q",f.read(8)))
         self.timestamp_pos = 48
         f.seek(self.offset + self.length_header + self.length_data + self.timestamp_pos,0) 
-        framerate = 1/(struct.unpack("q",f.read(8))[0] / 10**6 - self.first_frame_timestamp_sec)
+        self.framerate = 1/(struct.unpack("q",f.read(8))[0] / 10**6 - self.first_frame_timestamp_sec)
         self.width = self.data_shape[2][0]
         self.height = self.data_shape[3][0]
         self.data_depth = self.data_shape[8]
